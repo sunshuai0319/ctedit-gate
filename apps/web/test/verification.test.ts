@@ -24,6 +24,13 @@ describe('credit verification policy', () => {
     });
   });
 
+  it('parses the raw Primus response shape and numeric score string', () => {
+    expect(parseAttestationData('{"creditScore":"720"}')).toEqual({
+      creditScore: 720,
+      source: 'CONTROLLED_TEST_SOURCE',
+    });
+  });
+
   const base = { recipient: '0xabc', templateId: 'template-id', timestamp: 1_700_000_000_000, data: JSON.stringify({ data: { creditScore: 720, source: 'CONTROLLED_TEST_SOURCE' } }) };
   const policy = { threshold: 650, source: 'CONTROLLED_TEST_SOURCE' as const, maxAgeSeconds: 300 };
   it.each([
