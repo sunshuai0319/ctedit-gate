@@ -5,3 +5,5 @@ apps/web/dist/
 .env.*
 !.env.example
 .superpowers/
+
+*.tsbuildinfo
