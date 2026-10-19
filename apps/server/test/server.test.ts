@@ -34,4 +34,13 @@ describe('HTTP server', () => {
     expect(sign.status).toBe(400);
     expect(sign.headers['access-control-allow-origin']).toBe('http://localhost:5173');
   });
+
+  it.each([720, 600])('serves the configured controlled score %s through the HTTP chain', async (score) => {
+    const server = createServer({ ...config, demoCreditScore: score }, { sign: async () => 'signed' });
+    servers.push(server); await new Promise<void>((resolve) => server.listen(0, resolve));
+    const html = await request(server, '/score');
+    const payload = await request(server, '/api/score');
+    expect(html.body).toContain('/api/score');
+    expect(JSON.parse(payload.body).data.creditScore).toBe(score);
+  });
 });
