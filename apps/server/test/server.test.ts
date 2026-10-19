@@ -33,6 +33,9 @@ describe('HTTP server', () => {
     const sign = await request(server, '/api/primus/sign', { method: 'POST', body: JSON.stringify({ signParams: '{}', nonce: 'x' }) });
     expect(sign.status).toBe(400);
     expect(sign.headers['access-control-allow-origin']).toBe('http://localhost:5173');
+    const preflight = await request(server, '/api/primus/sign', { method: 'OPTIONS' });
+    expect(preflight.status).toBe(204);
+    expect(preflight.headers['access-control-allow-headers']).toBe('content-type');
   });
 
   it.each([720, 600])('serves the configured controlled score %s through the HTTP chain', async (score) => {

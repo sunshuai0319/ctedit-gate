@@ -11,7 +11,7 @@ export function createServer(config: ServerConfig, signer: PrimusSigner): http.S
   return http.createServer(async (req, res) => {
     const url = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
     try {
-      if (req.method === 'OPTIONS') { res.setHeader('access-control-allow-origin', config.allowedOrigin); res.setHeader('access-control-allow-methods', 'GET,POST,OPTIONS'); res.statusCode = 204; return res.end(); }
+      if (req.method === 'OPTIONS') { res.setHeader('access-control-allow-origin', config.allowedOrigin); res.setHeader('access-control-allow-methods', 'GET,POST,OPTIONS'); res.setHeader('access-control-allow-headers', 'content-type'); res.statusCode = 204; return res.end(); }
       if (req.method === 'GET' && url.pathname === '/health') return json(res, 200, { status: 'ok' }, config.allowedOrigin);
       if (req.method === 'GET' && url.pathname === '/score') { res.setHeader('content-type', 'text/html; charset=utf-8'); res.end(renderScorePage('/score')); return; }
       if (req.method === 'GET' && url.pathname === '/api/score') return json(res, 200, buildScorePayload(config.demoCreditScore, Date.now()), config.allowedOrigin);
