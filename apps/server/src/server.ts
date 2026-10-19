@@ -27,5 +27,8 @@ export function createServer(config: ServerConfig, signer: PrimusSigner): http.S
   });
 }
 if (process.env.NODE_ENV !== 'test' && process.argv[1]?.endsWith('/server.ts')) {
+  try { process.loadEnvFile?.(); } catch (error) {
+    if (!(error instanceof Error && 'code' in error && error.code === 'ENOENT')) throw error;
+  }
   const { loadServerConfig } = await import('./config.js'); const { PrimusSignerImpl } = await import('./signer.js'); const config = loadServerConfig(process.env); createServer(config, new PrimusSignerImpl(config)).listen(config.port);
 }
