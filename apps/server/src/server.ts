@@ -1,4 +1,6 @@
 import http from 'node:http';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import { buildScorePayload, renderScorePage } from './source.js';
 import type { ServerConfig } from './contracts.js';
 import { SignValidationError, type PrimusSigner, validateSignParams } from './signer.js';
@@ -27,7 +29,8 @@ export function createServer(config: ServerConfig, signer: PrimusSigner): http.S
   });
 }
 if (process.env.NODE_ENV !== 'test' && process.argv[1]?.endsWith('/server.ts')) {
-  try { process.loadEnvFile?.(); } catch (error) {
+  const projectEnvPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../.env');
+  try { process.loadEnvFile?.(projectEnvPath); } catch (error) {
     if (!(error instanceof Error && 'code' in error && error.code === 'ENOENT')) throw error;
   }
   const { loadServerConfig } = await import('./config.js'); const { PrimusSignerImpl } = await import('./signer.js'); const config = loadServerConfig(process.env); createServer(config, new PrimusSignerImpl(config)).listen(config.port);
