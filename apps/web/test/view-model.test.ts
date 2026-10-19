@@ -10,7 +10,7 @@ describe('demo view model', () => {
   ] as const)('maps %s state', (state, buttonLabel) => {
     const model = toViewModel({ kind: state, message: '' } as DemoState);
     expect(model.buttonLabel).toBe(buttonLabel);
-    expect(model.sourceLabel).toContain('测试数据');
+    expect(model.sourceLabel).toBe('数据来源：受控演示数据（Primus）');
   });
 
   it('gives actionable retry guidance without leaking secrets', () => {
@@ -23,8 +23,8 @@ describe('demo view model', () => {
   it('shows success metadata and threshold result', () => {
     const model = toViewModel({ kind: 'success', message: '', result: { passed: true, score: 720, threshold: 650, status: 'threshold passed', source: 'CONTROLLED_TEST_SOURCE', timestamp: 1_700_000_000_000, recipient: '0xabc', templateId: 'template-id' } });
     expect(model.statusLabel).toContain('通过');
-    expect(model.sourceLabel).toContain('CONTROLLED_TEST_SOURCE');
-    expect(model.metadata).toContain('template-id');
+    expect(model.sourceLabel).toBe('数据来源：受控演示数据（Primus）');
+    expect(model.metadata).toContain('模板 template-id');
     expect(model.allowRetry).toBe(true);
   });
 });
